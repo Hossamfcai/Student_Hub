@@ -28,7 +28,7 @@ export default function DashboardLayout() {
 
         <div className="w-full lg:w-[78%] flex flex-col h-full min-w-0">
           <NavBar />
-          <section className="flex-1 overflow-y-auto">
+          <section className="flex-1 overflow-y-auto scrollbar-thin mx-5">
             <Outlet />
           </section>
         </div>

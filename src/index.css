@@ -100,3 +100,6 @@
 
   --breakpoint-xs: 30rem;
 }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
