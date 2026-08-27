@@ -14,81 +14,75 @@ import {
 
 import NoteCard from "../../components/NoteCard";
 import NoteFormModal from "../../components/NoteFormModal";
-
+import { user } from "../../data/data";
 import "./notes.css";
 
 const STORAGE_KEY = "student-hub-notes";
+const initialNotes = user.initialNotes;
+// const initialNotes = [
+//   {
+//     id: uuidv4(),
+//     title: "React Component Architecture",
+//     content:
+//       "Keep components small and reusable. Pages should handle page-level logic while shared UI belongs inside components. Avoid putting navigation components directly inside individual pages when the dashboard layout already provides them.",
+//     category: "Lecture",
+//     tags: ["react", "frontend", "architecture"],
+//     color: "lavender",
+//     pinned: true,
+//     favorite: true,
+//     updatedAt: "2026-08-25T18:30:00",
+//   },
+//   {
+//     id: uuidv4(),
+//     title: "Database Exam Revision",
+//     content:
+//       "Review normalization, primary and foreign keys, joins, indexes, transactions, ACID properties, and SQL aggregation functions. Practice writing queries without relying on examples.",
+//     category: "Study",
+//     tags: ["database", "sql", "exam"],
+//     color: "cream",
+//     pinned: true,
+//     favorite: false,
+//     updatedAt: "2026-08-24T14:20:00",
+//   },
+//   {
+//     id: uuidv4(),
+//     title: "Graduation Project Ideas",
+//     content:
+//       "Prepare the presentation structure: problem → solution → architecture → technologies → AI pipeline → results → future work. Keep the explanation simple and focus on the real impact of the project.",
+//     category: "Project",
+//     tags: ["project", "presentation"],
+//     color: "green",
+//     pinned: false,
+//     favorite: true,
+//     updatedAt: "2026-08-22T20:10:00",
+//   },
+//   {
+//     id: uuidv4(),
+//     title: "Things to Remember",
+//     content:
+//       "Keep Git commits meaningful. Test before pushing. Document important decisions. When working with teammates, communicate changes before modifying shared files.",
+//     category: "Personal",
+//     tags: ["reminders", "productivity"],
+//     color: "blue",
+//     pinned: false,
+//     favorite: false,
+//     updatedAt: "2026-08-20T11:45:00",
+//   },
+//   {
+//     id: uuidv4(),
+//     title: "JavaScript Concepts",
+//     content:
+//       "Review closures, promises, async/await, event loop, map/filter/reduce, destructuring, spread syntax, and modules. Practice explaining each concept instead of memorizing definitions.",
+//     category: "Study",
+//     tags: ["javascript", "frontend"],
+//     color: "default",
+//     pinned: false,
+//     favorite: true,
+//     updatedAt: "2026-08-18T16:30:00",
+//   },
+// ];
 
-const initialNotes = [
-  {
-    id: 1,
-    title: "React Component Architecture",
-    content:
-      "Keep components small and reusable. Pages should handle page-level logic while shared UI belongs inside components. Avoid putting navigation components directly inside individual pages when the dashboard layout already provides them.",
-    category: "Lecture",
-    tags: ["react", "frontend", "architecture"],
-    color: "lavender",
-    pinned: true,
-    favorite: true,
-    updatedAt: "2026-08-25T18:30:00",
-  },
-  {
-    id: 2,
-    title: "Database Exam Revision",
-    content:
-      "Review normalization, primary and foreign keys, joins, indexes, transactions, ACID properties, and SQL aggregation functions. Practice writing queries without relying on examples.",
-    category: "Study",
-    tags: ["database", "sql", "exam"],
-    color: "cream",
-    pinned: true,
-    favorite: false,
-    updatedAt: "2026-08-24T14:20:00",
-  },
-  {
-    id: 3,
-    title: "Graduation Project Ideas",
-    content:
-      "Prepare the presentation structure: problem → solution → architecture → technologies → AI pipeline → results → future work. Keep the explanation simple and focus on the real impact of the project.",
-    category: "Project",
-    tags: ["project", "presentation"],
-    color: "green",
-    pinned: false,
-    favorite: true,
-    updatedAt: "2026-08-22T20:10:00",
-  },
-  {
-    id: 4,
-    title: "Things to Remember",
-    content:
-      "Keep Git commits meaningful. Test before pushing. Document important decisions. When working with teammates, communicate changes before modifying shared files.",
-    category: "Personal",
-    tags: ["reminders", "productivity"],
-    color: "blue",
-    pinned: false,
-    favorite: false,
-    updatedAt: "2026-08-20T11:45:00",
-  },
-  {
-    id: 5,
-    title: "JavaScript Concepts",
-    content:
-      "Review closures, promises, async/await, event loop, map/filter/reduce, destructuring, spread syntax, and modules. Practice explaining each concept instead of memorizing definitions.",
-    category: "Study",
-    tags: ["javascript", "frontend"],
-    color: "default",
-    pinned: false,
-    favorite: true,
-    updatedAt: "2026-08-18T16:30:00",
-  },
-];
-
-const categories = [
-  "All",
-  "Lecture",
-  "Study",
-  "Project",
-  "Personal",
-];
+const categories = ["All", "Lecture", "Study", "Project", "Personal"];
 
 function getStoredNotes() {
   try {
@@ -100,21 +94,13 @@ function getStoredNotes() {
 
     const parsedNotes = JSON.parse(savedNotes);
 
-    return Array.isArray(parsedNotes)
-      ? parsedNotes
-      : initialNotes;
+    return Array.isArray(parsedNotes) ? parsedNotes : initialNotes;
   } catch {
     return initialNotes;
   }
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  description,
-  iconClassName,
-}) {
+function StatCard({ icon: Icon, label, value, description, iconClassName }) {
   return (
     <motion.div
       initial={{
@@ -132,17 +118,13 @@ function StatCard({
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-on-surface-variant">
-            {label}
-          </p>
+          <p className="text-sm font-medium text-on-surface-variant">{label}</p>
 
           <p className="mt-2 text-3xl font-bold tracking-tight text-on-surface">
             {value}
           </p>
 
-          <p className="mt-1 text-xs text-on-surface-variant">
-            {description}
-          </p>
+          <p className="mt-1 text-xs text-on-surface-variant">{description}</p>
         </div>
 
         <div
@@ -173,17 +155,11 @@ export default function Notes() {
   const statistics = useMemo(() => {
     const total = notes.length;
 
-    const favorites = notes.filter(
-      (note) => note.favorite,
-    ).length;
+    const favorites = notes.filter((note) => note.favorite).length;
 
-    const pinned = notes.filter(
-      (note) => note.pinned,
-    ).length;
+    const pinned = notes.filter((note) => note.pinned).length;
 
-    const categoriesCount = new Set(
-      notes.map((note) => note.category),
-    ).size;
+    const categoriesCount = new Set(notes.map((note) => note.category)).size;
 
     return {
       total,
@@ -202,25 +178,17 @@ export default function Notes() {
         note.title.toLowerCase().includes(query) ||
         note.content.toLowerCase().includes(query) ||
         note.category.toLowerCase().includes(query) ||
-        note.tags?.some((tag) =>
-          tag.toLowerCase().includes(query),
-        );
+        note.tags?.some((tag) => tag.toLowerCase().includes(query));
 
       const matchesCategory =
-        categoryFilter === "All" ||
-        note.category === categoryFilter;
+        categoryFilter === "All" || note.category === categoryFilter;
 
-      const matchesFavorite =
-        !favoritesOnly || note.favorite;
+      const matchesFavorite = !favoritesOnly || note.favorite;
 
-      const matchesPinned =
-        !pinnedOnly || note.pinned;
+      const matchesPinned = !pinnedOnly || note.pinned;
 
       return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesFavorite &&
-        matchesPinned
+        matchesSearch && matchesCategory && matchesFavorite && matchesPinned
       );
     });
 
@@ -231,18 +199,9 @@ export default function Notes() {
       }
 
       // Then sort by updated date.
-      return (
-        new Date(second.updatedAt) -
-        new Date(first.updatedAt)
-      );
+      return new Date(second.updatedAt) - new Date(first.updatedAt);
     });
-  }, [
-    notes,
-    searchQuery,
-    categoryFilter,
-    favoritesOnly,
-    pinnedOnly,
-  ]);
+  }, [notes, searchQuery, categoryFilter, favoritesOnly, pinnedOnly]);
 
   function openCreateModal() {
     setEditingNote(null);
@@ -281,19 +240,14 @@ export default function Notes() {
         updatedAt: now,
       };
 
-      setNotes((previous) => [
-        newNote,
-        ...previous,
-      ]);
+      setNotes((previous) => [newNote, ...previous]);
     }
 
     closeModal();
   }
 
   function handleDelete(noteId) {
-    const note = notes.find(
-      (item) => item.id === noteId,
-    );
+    const note = notes.find((item) => item.id === noteId);
 
     if (!note) {
       return;
@@ -307,11 +261,7 @@ export default function Notes() {
       return;
     }
 
-    setNotes((previous) =>
-      previous.filter(
-        (item) => item.id !== noteId,
-      ),
-    );
+    setNotes((previous) => previous.filter((item) => item.id !== noteId));
   }
 
   function handleTogglePin(noteId) {
@@ -355,7 +305,7 @@ export default function Notes() {
     pinnedOnly;
 
   return (
-    <div className="notes-page min-h-[calc(100vh-4rem)] bg-surface px-5 py-7 md:px-8 lg:px-10">
+    <div className="notes-page min-h-[calc(100vh-4rem)] ">
       <div className="mx-auto max-w-[1500px]">
         {/* =====================================================
             PAGE HEADER
@@ -378,7 +328,6 @@ export default function Notes() {
           <div>
             <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-primary">
               <BookOpen size={15} />
-
               Knowledge Space
             </div>
 
@@ -387,8 +336,8 @@ export default function Notes() {
             </h1>
 
             <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant md:text-base">
-              Capture lectures, study material, project ideas, and
-              everything you want to remember in one organized space.
+              Capture lectures, study material, project ideas, and everything
+              you want to remember in one organized space.
             </p>
           </div>
 
@@ -456,9 +405,7 @@ export default function Notes() {
               <input
                 type="search"
                 value={searchQuery}
-                onChange={(event) =>
-                  setSearchQuery(event.target.value)
-                }
+                onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search notes, tags, or content..."
                 className="h-11 w-full rounded-lg border border-outline-variant bg-surface-container-lowest pl-10 pr-3 text-sm text-on-surface outline-none transition-all placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary/10"
               />
@@ -472,16 +419,13 @@ export default function Notes() {
                 </span>
 
                 {categories.map((category) => {
-                  const active =
-                    categoryFilter === category;
+                  const active = categoryFilter === category;
 
                   return (
                     <button
                       key={category}
                       type="button"
-                      onClick={() =>
-                        setCategoryFilter(category)
-                      }
+                      onClick={() => setCategoryFilter(category)}
                       className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-200 ${
                         active
                           ? "bg-primary text-on-primary shadow-sm"
@@ -497,29 +441,20 @@ export default function Notes() {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
-                  onClick={() =>
-                    setPinnedOnly((previous) => !previous)
-                  }
+                  onClick={() => setPinnedOnly((previous) => !previous)}
                   className={`inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition-all ${
                     pinnedOnly
                       ? "bg-primary-fixed text-primary"
                       : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
                   }`}
                 >
-                  <Pin
-                    size={13}
-                    fill={pinnedOnly ? "currentColor" : "none"}
-                  />
+                  <Pin size={13} fill={pinnedOnly ? "currentColor" : "none"} />
                   Pinned
                 </button>
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setFavoritesOnly(
-                      (previous) => !previous,
-                    )
-                  }
+                  onClick={() => setFavoritesOnly((previous) => !previous)}
                   className={`inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition-all ${
                     favoritesOnly
                       ? "bg-primary-fixed text-primary"
@@ -528,11 +463,7 @@ export default function Notes() {
                 >
                   <Heart
                     size={13}
-                    fill={
-                      favoritesOnly
-                        ? "currentColor"
-                        : "none"
-                    }
+                    fill={favoritesOnly ? "currentColor" : "none"}
                   />
                   Favorites
                 </button>
@@ -559,16 +490,12 @@ export default function Notes() {
         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-lg font-bold text-on-surface">
-              {categoryFilter === "All"
-                ? "All Notes"
-                : categoryFilter}
+              {categoryFilter === "All" ? "All Notes" : categoryFilter}
             </h2>
 
             <p className="mt-1 text-xs text-on-surface-variant">
               Showing {filteredNotes.length}{" "}
-              {filteredNotes.length === 1
-                ? "note"
-                : "notes"}
+              {filteredNotes.length === 1 ? "note" : "notes"}
             </p>
           </div>
 
@@ -577,9 +504,7 @@ export default function Notes() {
 
             <span>
               {statistics.favorites} favorite
-              {statistics.favorites === 1
-                ? ""
-                : "s"} saved
+              {statistics.favorites === 1 ? "" : "s"} saved
             </span>
           </div>
         </div>
@@ -601,9 +526,7 @@ export default function Notes() {
                   onEdit={openEditModal}
                   onDelete={handleDelete}
                   onTogglePin={handleTogglePin}
-                  onToggleFavorite={
-                    handleToggleFavorite
-                  }
+                  onToggleFavorite={handleToggleFavorite}
                 />
               ))}
             </motion.div>

@@ -20,7 +20,7 @@ export default function BarChartCard({ data = [] }) {
   }
 
   return (
-    <div className="w-full h-[320px] bg-surface border border-outline-variant rounded-xl p-4 flex flex-col items-center">
+    <div className="w-full h-[320px]  bg-surface-container-lowest rounded-lg p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-outline-variant hover:shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] transition-shadow flex flex-col items-center">
       <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <BarChart
           data={data}
