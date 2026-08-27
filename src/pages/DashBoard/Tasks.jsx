@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useReducer, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   CheckCircle2,
@@ -12,102 +12,18 @@ import {
   Trash2,
 } from "lucide-react";
 
+import { useDisclosure } from "@mantine/hooks";
 import TaskCard from "../../components/TaskCard";
 import TaskFormModal from "../../components/TaskFormModal";
 
 import "./tasks.css";
-
-const initialTasks = [
-  {
-    id: 1,
-    title: "Complete Database Assignment",
-    description:
-      "Finish the SQL queries and prepare the final documentation for submission.",
-    dueDate: "2026-08-28",
-    priority: "High",
-    category: "Assignment",
-    status: "In Progress",
-  },
-  {
-    id: 2,
-    title: "Review React Lecture",
-    description:
-      "Go through the component architecture lecture and review the examples.",
-    dueDate: "2026-08-29",
-    priority: "Medium",
-    category: "Study",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    title: "Prepare Project Presentation",
-    description:
-      "Finalize the slides and prepare the talking points for the presentation.",
-    dueDate: "2026-09-02",
-    priority: "High",
-    category: "Project",
-    status: "In Progress",
-  },
-  {
-    id: 4,
-    title: "Read Chapter 5",
-    description:
-      "Read the assigned chapter and write down the important concepts.",
-    dueDate: "2026-09-04",
-    priority: "Low",
-    category: "Study",
-    status: "Pending",
-  },
-  {
-    id: 5,
-    title: "Submit UX Research",
-    description:
-      "Upload the completed UX research report before the deadline.",
-    dueDate: "2026-08-25",
-    priority: "Medium",
-    category: "Assignment",
-    status: "Completed",
-  },
-  {
-    id: 6,
-    title: "Practice JavaScript Questions",
-    description:
-      "Complete the practice questions covering arrays, objects, and functions.",
-    dueDate: "2026-08-31",
-    priority: "Low",
-    category: "Study",
-    status: "Pending",
-  },
-];
-
-const STORAGE_KEY = "student-hub-tasks";
+import reducer, { getInitialUserState } from "../../context/authReducer";
+import DeletedModal from "../../components/DeletedModal";
 
 const statusOptions = ["All", "Pending", "In Progress", "Completed"];
 const priorityOptions = ["All", "High", "Medium", "Low"];
 
-function getStoredTasks() {
-  try {
-    const savedTasks = localStorage.getItem(STORAGE_KEY);
-
-    if (!savedTasks) {
-      return initialTasks;
-    }
-
-    const parsedTasks = JSON.parse(savedTasks);
-
-    return Array.isArray(parsedTasks) ? parsedTasks : initialTasks;
-  } catch {
-    return initialTasks;
-  }
-}
-
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  description,
-  iconClassName,
-}) {
+function StatCard({ icon: Icon, label, value, description, iconClassName }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -117,17 +33,13 @@ function StatCard({
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-on-surface-variant">
-            {label}
-          </p>
+          <p className="text-sm font-medium text-on-surface-variant">{label}</p>
 
           <p className="mt-2 text-3xl font-bold tracking-tight text-on-surface">
             {value}
           </p>
 
-          <p className="mt-1 text-xs text-on-surface-variant">
-            {description}
-          </p>
+          <p className="mt-1 text-xs text-on-surface-variant">{description}</p>
         </div>
 
         <div
@@ -165,32 +77,29 @@ function FilterSelect({ value, onChange, options, label }) {
 }
 
 export default function Tasks() {
-  const [tasks, setTasks] = useState(getStoredTasks);
+  const [userState, dispatch] = useReducer(reducer, null, getInitialUserState);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [sortBy, setSortBy] = useState("dueDate");
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-  }, [tasks]);
+  const [opened, { open, close }] = useDisclosure(false); // control deletedModal
+  const [modalOpen, setModalOpen] = useState(false); // control updated or add modal
+  const [task, setTask] = useState(null); //control the returned data from taskCard component
 
   const statistics = useMemo(() => {
-    const total = tasks.length;
+    const total = userState.initialTasks.length;
 
-    const completed = tasks.filter(
+    const completed = userState.initialTasks.filter(
       (task) => task.status === "Completed",
     ).length;
 
-    const inProgress = tasks.filter(
+    const inProgress = userState.initialTasks.filter(
       (task) => task.status === "In Progress",
     ).length;
 
-    const pending = tasks.filter(
+    const pending = userState.initialTasks.filter(
       (task) => task.status === "Pending",
     ).length;
 
@@ -204,12 +113,12 @@ export default function Tasks() {
       pending,
       completionPercentage,
     };
-  }, [tasks]);
+  }, [userState]);
 
   const filteredTasks = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
-    const result = tasks.filter((task) => {
+    const result = userState.initialTasks.filter((task) => {
       const matchesSearch =
         !query ||
         task.title.toLowerCase().includes(query) ||
@@ -233,9 +142,7 @@ export default function Tasks() {
           Low: 3,
         };
 
-        return (
-          priorityOrder[first.priority] - priorityOrder[second.priority]
-        );
+        return priorityOrder[first.priority] - priorityOrder[second.priority];
       }
 
       if (sortBy === "title") {
@@ -251,84 +158,51 @@ export default function Tasks() {
         new Date(`${second.dueDate}T00:00:00`)
       );
     });
-  }, [tasks, searchQuery, statusFilter, priorityFilter, sortBy]);
+  }, [userState, searchQuery, statusFilter, priorityFilter, sortBy]);
 
   function openCreateModal() {
-    setEditingTask(null);
+    setTask(null);
     setModalOpen(true);
   }
 
   function openEditModal(task) {
-    setEditingTask(task);
+    setTask(task);
     setModalOpen(true);
   }
 
   function closeModal() {
     setModalOpen(false);
-    setEditingTask(null);
+    setTask(null);
   }
 
   function handleTaskSubmit(formData) {
-    if (editingTask) {
-      setTasks((previous) =>
-        previous.map((task) =>
-          task.id === editingTask.id
-            ? {
-                ...task,
-                ...formData,
-              }
-            : task,
-        ),
-      );
+    if (task) {
+      dispatch({ type: "updateTask", payload: { task, formData } });
     } else {
-      const newTask = {
-        id: Date.now(),
-        ...formData,
-      };
-
-      setTasks((previous) => [newTask, ...previous]);
+      dispatch({ type: "addTask", payload: formData });
     }
 
     closeModal();
   }
 
   function handleToggleComplete(taskId) {
-    setTasks((previous) =>
-      previous.map((task) => {
-        if (task.id !== taskId) {
-          return task;
-        }
-
-        const completed = task.status === "Completed";
-
-        return {
-          ...task,
-          status: completed ? "Pending" : "Completed",
-        };
-      }),
-    );
+    dispatch({ type: "onToggleComplete", payload: { id: taskId } });
   }
 
-  function handleDelete(taskId) {
-    const task = tasks.find((item) => item.id === taskId);
+  function openDeleteModal(task) {
+    open();
 
-    if (!task) {
-      return;
+    if (task) {
+      setTask(task);
+    } else {
+      close();
     }
-
-    const shouldDelete = window.confirm(
-      `Delete "${task.title}"? This action cannot be undone.`,
-    );
-
-    if (!shouldDelete) {
-      return;
-    }
-
-    setTasks((previous) =>
-      previous.filter((item) => item.id !== taskId),
-    );
   }
+  function handleDelete() {
+    dispatch({ type: "deleteTask", payload: { id: task.id } });
 
+    close();
+  }
   function clearFilters() {
     setSearchQuery("");
     setStatusFilter("All");
@@ -337,7 +211,7 @@ export default function Tasks() {
   }
 
   return (
-    <div className="tasks-page min-h-[calc(100vh-4rem)] bg-surface px-5 py-7 md:px-8 lg:px-10">
+    <div className="tasks-page min-h-[calc(100vh-4rem)] ">
       <div className="mx-auto max-w-[1500px]">
         {/* =====================================================
             PAGE HEADER
@@ -499,12 +373,7 @@ export default function Tasks() {
               <FilterSelect
                 value={sortBy}
                 onChange={setSortBy}
-                options={[
-                  "dueDate",
-                  "priority",
-                  "title",
-                  "status",
-                ]}
+                options={["dueDate", "priority", "title", "status"]}
                 label="Sort tasks"
               />
 
@@ -557,7 +426,7 @@ export default function Tasks() {
                   task={task}
                   onToggleComplete={handleToggleComplete}
                   onEdit={openEditModal}
-                  onDelete={handleDelete}
+                  onDelete={openDeleteModal}
                 />
               ))}
             </motion.div>
@@ -614,10 +483,43 @@ export default function Tasks() {
 
       <TaskFormModal
         opened={modalOpen}
-        task={editingTask}
+        task={task}
         onClose={closeModal}
         onSubmit={handleTaskSubmit}
       />
+      <DeletedModal opened={opened} close={close}>
+        <div className="flex flex-col items-center gap-6 px-2 py-3">
+          <div className="flex flex-col items-center gap-2">
+            {" "}
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-error-container mb-sm  text-error">
+              <Trash2 />
+            </div>
+            <h3 className="font-headline-sm text-headline-sm text-on-surface mb-xs font-bold">
+              Confirm Deletion
+            </h3>
+            <p className="font-body-sm text-body-sm text-on-surface-variant mb-lg px-xs text-center">
+              Are you sure you want to delete this item? This action cannot be
+              undone and the data will be permanently removed.
+            </p>
+          </div>
+          <div className="flex w-full gap-3 sm:flex-row flex-col-reverse">
+            <button
+              className="w-full sm:w-1/2 inline-flex justify-center items-center px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-sm font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              type="button"
+              onClick={close}
+            >
+              Cancel
+            </button>
+            <button
+              className="w-full sm:w-1/2 inline-flex justify-center items-center px-4 py-2 bg-error rounded-sm font-label-md text-label-md text-on-error hover:bg-error/90 transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
+              type="button"
+              onClick={handleDelete}
+            >
+              Delete Task
+            </button>
+          </div>
+        </div>
+      </DeletedModal>
     </div>
   );
 }

@@ -2,12 +2,28 @@ import BarChartCard from "../../components/barChart";
 import PieChartCard from "../../components/pieChart";
 import StatisticsCard from "../../components/statisticsCard";
 import { statisticsData, chartData } from "../../data/data";
+import { motion } from "motion/react";
+// import { user } from "../../data/data";
+// import { useEffect } from "react";
 
 export default function Home() {
   const statisticsCards = [...statisticsData];
 
   return (
-    <div className="flex flex-col">
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 15,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.35,
+      }}
+      className="flex flex-col"
+    >
       <header className="my-3">
         <h2 className="font-headline-lg font-bold text-headline-lg text-on-background mb-2">
           Welcome back, Alex
@@ -17,12 +33,12 @@ export default function Home() {
         </p>
       </header>
       <section className="flex flex-col">
-        <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {statisticsCards.map((card, i) => {
             return <StatisticsCard key={i} info={card} id={i + 1} />;
           })}
         </div>
-        <div className="grid grid-cols-1 gap-y-6 gap-x-2  lg:grid-cols-3 justify-items-center px-5 my-6">
+        <div className="grid grid-cols-1 gap-y-6 gap-x-2  lg:grid-cols-3 justify-items-center my-6">
           {/* Chart takes up 2 out of 3 columns on desktop */}
           <div className="lg:col-span-2 w-full">
             <PieChartCard data={chartData} />
@@ -34,6 +50,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 }
