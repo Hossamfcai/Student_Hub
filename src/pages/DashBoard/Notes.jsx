@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useReducer, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   BookOpen,
@@ -11,94 +11,14 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
-
+import { useDisclosure } from "@mantine/hooks";
 import NoteCard from "../../components/NoteCard";
 import NoteFormModal from "../../components/NoteFormModal";
-import { user } from "../../data/data";
 import "./notes.css";
-
-const STORAGE_KEY = "student-hub-notes";
-const initialNotes = user.initialNotes;
-// const initialNotes = [
-//   {
-//     id: uuidv4(),
-//     title: "React Component Architecture",
-//     content:
-//       "Keep components small and reusable. Pages should handle page-level logic while shared UI belongs inside components. Avoid putting navigation components directly inside individual pages when the dashboard layout already provides them.",
-//     category: "Lecture",
-//     tags: ["react", "frontend", "architecture"],
-//     color: "lavender",
-//     pinned: true,
-//     favorite: true,
-//     updatedAt: "2026-08-25T18:30:00",
-//   },
-//   {
-//     id: uuidv4(),
-//     title: "Database Exam Revision",
-//     content:
-//       "Review normalization, primary and foreign keys, joins, indexes, transactions, ACID properties, and SQL aggregation functions. Practice writing queries without relying on examples.",
-//     category: "Study",
-//     tags: ["database", "sql", "exam"],
-//     color: "cream",
-//     pinned: true,
-//     favorite: false,
-//     updatedAt: "2026-08-24T14:20:00",
-//   },
-//   {
-//     id: uuidv4(),
-//     title: "Graduation Project Ideas",
-//     content:
-//       "Prepare the presentation structure: problem → solution → architecture → technologies → AI pipeline → results → future work. Keep the explanation simple and focus on the real impact of the project.",
-//     category: "Project",
-//     tags: ["project", "presentation"],
-//     color: "green",
-//     pinned: false,
-//     favorite: true,
-//     updatedAt: "2026-08-22T20:10:00",
-//   },
-//   {
-//     id: uuidv4(),
-//     title: "Things to Remember",
-//     content:
-//       "Keep Git commits meaningful. Test before pushing. Document important decisions. When working with teammates, communicate changes before modifying shared files.",
-//     category: "Personal",
-//     tags: ["reminders", "productivity"],
-//     color: "blue",
-//     pinned: false,
-//     favorite: false,
-//     updatedAt: "2026-08-20T11:45:00",
-//   },
-//   {
-//     id: uuidv4(),
-//     title: "JavaScript Concepts",
-//     content:
-//       "Review closures, promises, async/await, event loop, map/filter/reduce, destructuring, spread syntax, and modules. Practice explaining each concept instead of memorizing definitions.",
-//     category: "Study",
-//     tags: ["javascript", "frontend"],
-//     color: "default",
-//     pinned: false,
-//     favorite: true,
-//     updatedAt: "2026-08-18T16:30:00",
-//   },
-// ];
+import reducer, { getInitialUserState } from "../../context/authReducer";
+import DeletedModal from "../../components/DeletedModal";
 
 const categories = ["All", "Lecture", "Study", "Project", "Personal"];
-
-function getStoredNotes() {
-  try {
-    const savedNotes = localStorage.getItem(STORAGE_KEY);
-
-    if (!savedNotes) {
-      return initialNotes;
-    }
-
-    const parsedNotes = JSON.parse(savedNotes);
-
-    return Array.isArray(parsedNotes) ? parsedNotes : initialNotes;
-  } catch {
-    return initialNotes;
-  }
-}
 
 function StatCard({ icon: Icon, label, value, description, iconClassName }) {
   return (
@@ -138,28 +58,29 @@ function StatCard({ icon: Icon, label, value, description, iconClassName }) {
 }
 
 export default function Notes() {
-  const [notes, setNotes] = useState(getStoredNotes);
+  const [userState, dispatch] = useReducer(reducer, null, getInitialUserState);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [pinnedOnly, setPinnedOnly] = useState(false);
 
+  const [opened, { open, close }] = useDisclosure(false); // control deletedModal
   const [modalOpen, setModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
-  }, [notes]);
-
   const statistics = useMemo(() => {
-    const total = notes.length;
+    const total = userState.initialNotes.length;
 
-    const favorites = notes.filter((note) => note.favorite).length;
+    const favorites = userState.initialNotes.filter(
+      (note) => note.favorite,
+    ).length;
 
-    const pinned = notes.filter((note) => note.pinned).length;
+    const pinned = userState.initialNotes.filter((note) => note.pinned).length;
 
-    const categoriesCount = new Set(notes.map((note) => note.category)).size;
+    const categoriesCount = new Set(
+      userState.initialNotes.map((note) => note.category),
+    ).size;
 
     return {
       total,
@@ -167,12 +88,12 @@ export default function Notes() {
       pinned,
       categoriesCount,
     };
-  }, [notes]);
+  }, [userState]);
 
   const filteredNotes = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
-    const result = notes.filter((note) => {
+    const result = userState.initialNotes.filter((note) => {
       const matchesSearch =
         !query ||
         note.title.toLowerCase().includes(query) ||
@@ -193,7 +114,7 @@ export default function Notes() {
     });
 
     return [...result].sort((first, second) => {
-      // Pinned notes always appear first.
+      // Pinned userState.initialNotes always appear first.
       if (first.pinned !== second.pinned) {
         return first.pinned ? -1 : 1;
       }
@@ -201,7 +122,7 @@ export default function Notes() {
       // Then sort by updated date.
       return new Date(second.updatedAt) - new Date(first.updatedAt);
     });
-  }, [notes, searchQuery, categoryFilter, favoritesOnly, pinnedOnly]);
+  }, [userState, searchQuery, categoryFilter, favoritesOnly, pinnedOnly]);
 
   function openCreateModal() {
     setEditingNote(null);
@@ -220,75 +141,38 @@ export default function Notes() {
 
   function handleNoteSubmit(formData) {
     const now = new Date().toISOString();
-
     if (editingNote) {
-      setNotes((previous) =>
-        previous.map((note) =>
-          note.id === editingNote.id
-            ? {
-                ...note,
-                ...formData,
-                updatedAt: now,
-              }
-            : note,
-        ),
-      );
+      dispatch({
+        type: "updateNote",
+        payload: { formData, updatedAt: now, id: editingNote.id },
+      });
     } else {
-      const newNote = {
-        id: Date.now(),
-        ...formData,
-        updatedAt: now,
-      };
-
-      setNotes((previous) => [newNote, ...previous]);
+      dispatch({ type: "addNote", payload: { formData, updatedAt: now } });
     }
 
     closeModal();
   }
+  function openDeletedModal(note) {
+    open();
 
-  function handleDelete(noteId) {
-    const note = notes.find((item) => item.id === noteId);
-
-    if (!note) {
-      return;
+    if (note) {
+      setEditingNote(note);
+    } else {
+      close();
     }
+  }
 
-    const shouldDelete = window.confirm(
-      `Delete "${note.title}"? This action cannot be undone.`,
-    );
-
-    if (!shouldDelete) {
-      return;
-    }
-
-    setNotes((previous) => previous.filter((item) => item.id !== noteId));
+  function handleDelete() {
+    dispatch({ type: "deleteNote", payload: { id: editingNote.id } });
+    close();
   }
 
   function handleTogglePin(noteId) {
-    setNotes((previous) =>
-      previous.map((note) =>
-        note.id === noteId
-          ? {
-              ...note,
-              pinned: !note.pinned,
-              updatedAt: new Date().toISOString(),
-            }
-          : note,
-      ),
-    );
+    dispatch({ type: "onTogglePin", payload: { id: noteId } });
   }
 
   function handleToggleFavorite(noteId) {
-    setNotes((previous) =>
-      previous.map((note) =>
-        note.id === noteId
-          ? {
-              ...note,
-              favorite: !note.favorite,
-            }
-          : note,
-      ),
-    );
+    dispatch({ type: "onToggleFavorite", payload: { id: noteId } });
   }
 
   function clearFilters() {
@@ -524,7 +408,7 @@ export default function Notes() {
                   key={note.id}
                   note={note}
                   onEdit={openEditModal}
-                  onDelete={handleDelete}
+                  onDelete={openDeletedModal}
                   onTogglePin={handleTogglePin}
                   onToggleFavorite={handleToggleFavorite}
                 />
@@ -589,6 +473,39 @@ export default function Notes() {
         onClose={closeModal}
         onSubmit={handleNoteSubmit}
       />
+      <DeletedModal opened={opened} close={close}>
+        <div className="flex flex-col items-center gap-6 px-2 py-3">
+          <div className="flex flex-col items-center gap-2">
+            {" "}
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-error-container mb-sm  text-error">
+              <Trash2 />
+            </div>
+            <h3 className="font-headline-sm text-headline-sm text-on-surface mb-xs font-bold">
+              Confirm Deletion
+            </h3>
+            <p className="font-body-sm text-body-sm text-on-surface-variant mb-lg px-xs text-center">
+              Are you sure you want to delete this item? This action cannot be
+              undone and the data will be permanently removed.
+            </p>
+          </div>
+          <div className="flex w-full gap-3 sm:flex-row flex-col-reverse">
+            <button
+              className="w-full sm:w-1/2 inline-flex justify-center items-center px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-sm font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              type="button"
+              onClick={close}
+            >
+              Cancel
+            </button>
+            <button
+              className="w-full sm:w-1/2 inline-flex justify-center items-center px-4 py-2 bg-error rounded-sm font-label-md text-label-md text-on-error hover:bg-error/90 transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
+              type="button"
+              onClick={handleDelete}
+            >
+              Delete Task
+            </button>
+          </div>
+        </div>
+      </DeletedModal>
     </div>
   );
 }

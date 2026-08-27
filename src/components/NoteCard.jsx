@@ -1,11 +1,5 @@
 import { motion } from "motion/react";
-import {
-  Edit3,
-  Heart,
-  MoreHorizontal,
-  Pin,
-  Trash2,
-} from "lucide-react";
+import { Edit3, Heart, MoreHorizontal, Pin, Trash2 } from "lucide-react";
 
 const categoryStyles = {
   Lecture: {
@@ -83,8 +77,11 @@ export default function NoteCard({
   onTogglePin,
   onToggleFavorite,
 }) {
-  const category =
-    categoryStyles[note.category] || categoryStyles.Personal;
+  function deleteNoteCard(note) {
+    console.log("done");
+    onDelete(note);
+  }
+  const category = categoryStyles[note.category] || categoryStyles.Personal;
 
   const background =
     note.color && noteColors[note.color]
@@ -124,9 +121,7 @@ export default function NoteCard({
             <span
               className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold ${category.badge}`}
             >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${category.dot}`}
-              />
+              <span className={`h-1.5 w-1.5 rounded-full ${category.dot}`} />
 
               {note.category}
             </span>
@@ -159,10 +154,7 @@ export default function NoteCard({
               : "text-outline hover:bg-surface-container-high hover:text-primary"
           }`}
         >
-          <Heart
-            size={17}
-            fill={note.favorite ? "currentColor" : "none"}
-          />
+          <Heart size={17} fill={note.favorite ? "currentColor" : "none"} />
         </button>
       </div>
 
@@ -198,9 +190,7 @@ export default function NoteCard({
 
           <span className="h-1 w-1 rounded-full bg-outline" />
 
-          <span>
-            {note.content?.length || 0} chars
-          </span>
+          <span>{note.content?.length || 0} chars</span>
         </div>
 
         {/* Actions */}
@@ -215,10 +205,7 @@ export default function NoteCard({
                 : "text-on-surface-variant hover:bg-surface-container-high hover:text-primary"
             }`}
           >
-            <Pin
-              size={14}
-              fill={note.pinned ? "currentColor" : "none"}
-            />
+            <Pin size={14} fill={note.pinned ? "currentColor" : "none"} />
           </button>
 
           <button
@@ -232,7 +219,9 @@ export default function NoteCard({
 
           <button
             type="button"
-            onClick={() => onDelete(note.id)}
+            onClick={() => {
+              deleteNoteCard(note);
+            }}
             aria-label={`Delete ${note.title}`}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-error-container hover:text-error"
           >

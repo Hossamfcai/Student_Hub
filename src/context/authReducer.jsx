@@ -16,6 +16,7 @@ export function getInitialUserState() {
     return user;
   }
 }
+
 export function updateLocalStorage(user) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
 }
@@ -72,6 +73,73 @@ export default function reducer(currentState, action) {
         };
       });
       const newUser = { ...currentState, initialTasks: [...newTasks] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "addNote": {
+      const newNote = {
+        id: uuidv4(),
+        updatedAt: action.payload.date,
+        ...action.payload.formData,
+      };
+      const newUser = {
+        ...currentState,
+        initialNotes: [...currentState.initialNotes, newNote],
+      };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+
+    case "updateNote": {
+      const newNote = currentState.initialNotes.map((note) =>
+        note.id === action.payload.id
+          ? {
+              ...note,
+              ...action.payload.formData,
+              updatedAt: action.payload.updatedAt,
+            }
+          : note,
+      );
+      const newUser = { ...currentState, initialNotes: [...newNote] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "deleteNote": {
+      const newNote = currentState.initialNotes.filter((note) => {
+        return note.id !== action.payload.id;
+      });
+      const newUser = { ...currentState, initialNotes: [...newNote] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "onTogglePin": {
+      const newNotes = currentState.initialNotes.map((note) => {
+        if (note.id === action.payload.id) {
+          return {
+            ...note,
+            pinned: !note.pinned,
+            updatedAt: new Date().toISOString(),
+          };
+        } else {
+          return note;
+        }
+      });
+      const newUser = { ...currentState, initialNotes: [...newNotes] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "onToggleFavorite": {
+      const newNotes = currentState.initialNotes.map((note) => {
+        if (note.id === action.payload.id) {
+          return {
+            ...note,
+            favorite: !note.favorite,
+          };
+        } else {
+          return note;
+        }
+      });
+      const newUser = { ...currentState, initialNotes: [...newNotes] };
       updateLocalStorage(newUser);
       return newUser;
     }
