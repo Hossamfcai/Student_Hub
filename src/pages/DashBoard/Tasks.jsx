@@ -16,7 +16,7 @@ import { useDisclosure } from "@mantine/hooks";
 import TaskCard from "../../components/TaskCard";
 import TaskFormModal from "../../components/TaskFormModal";
 
-import "./tasks.css";
+import "./Tasks.css";
 import reducer, { getInitialUserState } from "../../context/authReducer";
 import DeletedModal from "../../components/DeletedModal";
 
