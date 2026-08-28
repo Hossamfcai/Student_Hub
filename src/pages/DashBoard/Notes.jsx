@@ -14,7 +14,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import NoteCard from "../../components/NoteCard";
 import NoteFormModal from "../../components/NoteFormModal";
-import "./notes.css";
+import "../../styles/notes.css";
 import reducer, { getInitialUserState } from "../../context/authReducer";
 import DeletedModal from "../../components/DeletedModal";
 import StatCard from "../../components/StateCard";

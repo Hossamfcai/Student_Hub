@@ -9,9 +9,6 @@ import {
   CircleCheckBig,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import videoImage from "../assets/videoImage.jpg";
-import pdfImage from "../assets/pdfImage.jpg";
-import websiteImage from "../assets/websiteImage.jpg";
 
 export const linksData = [
   { title: "Home", path: "/Dashboard/Home", icon: <House /> },
@@ -29,7 +26,7 @@ export const statisticsData = [
   },
   {
     icon: <ClipboardClock />,
-    title: "Total Notes ",
+    title: "Total Notes",
     result: "",
   },
   {
@@ -39,24 +36,25 @@ export const statisticsData = [
   },
 ];
 
-export const chartData = [
-  { name: "Pending", value: 5, color: "indigo.6" },
-  { name: "In progress", value: 10, color: "yellow.6" },
-  { name: "Completed", value: 85, color: "teal.6" },
-];
-
 export const user = {
-  image: "",
-  name: "",
-  major: "",
-  universtiy: "",
-  studentId: "",
-  email: "",
-  phone: "",
-  address: "",
-  college: "",
-  degree: "",
-  connect: ["github", "linkedIn"],
+  image: { url: "" },
+  personalInfo: {
+    name: "Alex J. Mercer",
+    title: "Computer Science Major & Software Developer",
+    email: "alex.mercer@university.edu",
+    phone: "+1 (555) 123-4567",
+    address: "742 Evergreen Terrace, Springfield, State 12345",
+  },
+  AcademicInfo: {
+    major: "Minor in Mathematics",
+    college: "College of Engineering and Computer Science",
+    degree: "B.S. Computer Science",
+  },
+
+  connect: [
+    { name: "Website", url: "https://example.com" },
+    { name: "GitHub", url: "https://github.com" },
+  ],
   skills: [
     "UI/UX Design",
     "Tailwind CSS",
@@ -195,7 +193,6 @@ export const user = {
       link: "https://www.w3schools.com/",
       title: "Advanced Calculus: Semester 2 Fundamentals",
       type: "Video",
-      imageUrl: videoImage,
       content:
         "Comprehensive study guide covering multi-variable calculus and differential equations.",
 
@@ -208,7 +205,6 @@ export const user = {
       link: "https://developer.mozilla.org/en-US/",
       title: "JSTOR Research Database Access Portal",
       type: "Pdf",
-      imageUrl: pdfImage,
       content:
         "Direct portal link to academic journals, primary sources, and books for history thesis.",
 
@@ -221,7 +217,7 @@ export const user = {
       link: "https://jsonplaceholder.typicode.com/",
       title: "Introduction to Machine Learning Lecture Series",
       type: "Website",
-      imageUrl: websiteImage,
+
       content:
         "Stanford CS229 recorded lectures covering supervised learning, SVMs, and neural networks.",
 
@@ -235,7 +231,6 @@ export const user = {
       link: "https://jsonplaceholder.typicode.com/",
       title: "Introduction to Machine Learning Lecture Series",
       type: "Website",
-      imageUrl: websiteImage,
       content:
         "Stanford CS229 recorded lectures covering supervised learning, SVMs, and neural networks.",
 

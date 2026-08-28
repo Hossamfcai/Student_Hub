@@ -1,14 +1,29 @@
+import { useReducer } from "react";
 import BarChartCard from "../../components/barChart";
 import PieChartCard from "../../components/pieChart";
 import StatisticsCard from "../../components/statisticsCard";
-import { statisticsData, chartData } from "../../data/data";
+import { statisticsData } from "../../data/data";
 import { motion } from "motion/react";
-// import { user } from "../../data/data";
-// import { useEffect } from "react";
+import reducer, { getInitialUserState } from "../../context/authReducer";
 
 export default function Home() {
   const statisticsCards = [...statisticsData];
 
+  const [userState] = useReducer(reducer, null, getInitialUserState);
+  const totalpending = userState.initialTasks.filter((task) => {
+    return task.status == "Pending";
+  });
+  const totalInProgress = userState.initialTasks.filter((task) => {
+    return task.status == "In Progress";
+  });
+  const totalCompleted = userState.initialTasks.filter((task) => {
+    return task.status == "Completed";
+  });
+  const chartData = [
+    { name: "Pending", value: totalpending.length, color: "indigo.6" },
+    { name: "In progress", value: totalInProgress.length, color: "yellow.6" },
+    { name: "Completed", value: totalCompleted.length, color: "teal.6" },
+  ];
   return (
     <motion.div
       initial={{
@@ -26,10 +41,10 @@ export default function Home() {
     >
       <header className="my-3">
         <h2 className="font-headline-lg font-bold text-headline-lg text-on-background mb-2">
-          Welcome back, Alex
+          Welcome back, {userState.personalInfo.name}
         </h2>
         <p className="font-body-lg text-body-lg text-on-surface-variant">
-          Here's an overview of your academic progress today.
+          Here's an overview of your academic progress.
         </p>
       </header>
       <section className="flex flex-col">

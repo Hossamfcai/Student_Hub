@@ -1,14 +1,16 @@
 import { Menu } from "lucide-react";
-import { Avatar } from "@mantine/core";
+import defaultImage from "../assets/Images/defaultUser.jpg";
 import { linksData } from "../data/data";
 import NavLink from "./navLink";
-import { useContext } from "react";
+import { useContext, useReducer } from "react";
 import { ToggleContext } from "../context/toggleContext";
 import { Link } from "react-router-dom";
+import reducer, { getInitialUserState } from "../context/authReducer";
 
 export default function NavBar() {
   const links = [...linksData];
   const { toggleSidebar } = useContext(ToggleContext);
+  const [userState, dispatch] = useReducer(reducer, null, getInitialUserState);
 
   return (
     <nav className="w-full h-16 bg-surface-container-lowest border-b border-outline-variant shadow-sm z-10 flex justify-between items-center px-6">
@@ -31,7 +33,13 @@ export default function NavBar() {
 
       <div className="flex gap-4 items-center">
         <Link to="/Dashboard/Profile">
-          <Avatar radius="xl" />
+          <div className=" h-9 w-9 rounded-full  bg-surface-container-lowest shadow-xl">
+            <img
+              loading="lazy"
+              className="rounded-full w-full h-full object-cover"
+              src={userState.image.url ? userState.image.url : defaultImage}
+            />
+          </div>
         </Link>
       </div>
     </nav>

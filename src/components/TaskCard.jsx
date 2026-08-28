@@ -121,7 +121,7 @@ export default function TaskCard({ task, onToggleComplete, onEdit, onDelete }) {
         </div>
 
         {/* Actions */}
-        <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        <div className="flex shrink-0 items-center gap-1  ">
           <button
             type="button"
             onClick={() => onEdit(task)}

@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Edit3, Heart, MoreHorizontal, Pin, Trash2 } from "lucide-react";
+import { Edit3, Heart, Pin, Trash2 } from "lucide-react";
 
 const categoryStyles = {
   Lecture: {
@@ -194,7 +194,7 @@ export default function NoteCard({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        <div className="flex items-center gap-1  transition-opacity duration-200 ">
           <button
             type="button"
             onClick={() => onTogglePin(note.id)}
@@ -226,14 +226,6 @@ export default function NoteCard({
             className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-error-container hover:text-error"
           >
             <Trash2 size={14} />
-          </button>
-
-          <button
-            type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant"
-            aria-label="More options"
-          >
-            <MoreHorizontal size={15} />
           </button>
         </div>
       </div>

@@ -1,8 +1,8 @@
 import { motion } from "motion/react";
 import { Edit3, Heart, Pin, Trash2 } from "lucide-react";
-import pdfImage from "../assets/pdfImage.jpg";
-import videoImage from "../assets/videoImage.jpg";
-import websiteImage from "../assets/websiteImage.jpg";
+import pdfImage from "../assets/Images/pdfImage.jpg";
+import videoImage from "../assets/Images/videoImage.jpg";
+import websiteImage from "../assets/Images/websiteImage.jpg";
 
 const typeStyles = {
   Pdf: {
@@ -147,7 +147,7 @@ export default function ResourceCard({
             Visite {resource.type}
           </a>
           {/* Actions */}
-          <div className="flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <div className="flex items-center gap-1 ">
             <button
               type="button"
               onClick={() => onTogglePin(resource.id)}
