@@ -5,7 +5,7 @@
 @import "tailwindcss";
 
 /* 3. Import Mantine using its layer-enabled stylesheet */
-@import "@mantine/core/styles.layer.css";
+@import "@mantine/core/styles.css";
 
 @theme {
   /* Fonts */

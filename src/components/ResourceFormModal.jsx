@@ -1,6 +1,7 @@
 import { X, Files } from "lucide-react";
 import { TagsInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useEffect } from "react";
 
 // const emptyNote = {
 //   title: "",
@@ -18,16 +19,15 @@ export default function ResourceFormModal({ resource, onClose, onSubmit }) {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      link: resource ? resource.link : "",
-      title: resource ? resource.title : "",
-      type: resource ? resource.type : "",
-      imageUrl: "",
-      content: resource ? resource.content : "",
-      tags: resource ? [...resource.tags] : [],
-      pinned: resource ? resource.link : false,
-      favourite: resource ? resource.link : false,
+      link: resource?.link || "",
+      title: resource?.title || "",
+      type: resource?.type || "Video", // Provided default fallback
+      imageUrl: resource?.imageUrl || "",
+      content: resource?.content || "",
+      tags: resource?.tags ? [...resource.tags] : [],
+      pinned: Boolean(resource?.pinned),
+      favourite: Boolean(resource?.favourite),
     },
-
     // Validation rules
     validate: {
       title: (value) => (value.trim().length > 0 ? null : "Title is required"),
@@ -42,13 +42,22 @@ export default function ResourceFormModal({ resource, onClose, onSubmit }) {
           : "Content must be at least 10 characters long",
     },
   });
-
-  function submitForm(values) {
-    console.log(values);
-    onSubmit(values);
-    form.reset();
-  }
-
+  useEffect(() => {
+    if (resource) {
+      form.setValues({
+        link: resource.link || "",
+        title: resource.title || "",
+        type: resource.type || "Website",
+        imageUrl: resource.imageUrl || "",
+        content: resource.content || "",
+        tags: resource.tags ? [...resource.tags] : [],
+        pinned: Boolean(resource.pinned),
+        favourite: Boolean(resource.favourite),
+      });
+    } else {
+      form.reset();
+    }
+  }, [resource]);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-[#15132a]/45 px-4 py-6 backdrop-blur-sm"
@@ -91,7 +100,8 @@ export default function ResourceFormModal({ resource, onClose, onSubmit }) {
         {/* Form */}
         <form
           onSubmit={form.onSubmit((values) => {
-            submitForm(values);
+            onSubmit(values);
+            form.reset();
           })}
           className="space-y-5 p-6"
         >
