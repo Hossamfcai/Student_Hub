@@ -186,4 +186,19 @@ export const user = {
       status: "Pending",
     },
   ],
+  resources: [
+    {
+      id: uuidv4(),
+      title: "React Component Architecture",
+      type: "video",
+      imageUrl: "",
+      content:
+        "Keep components small and reusable. Pages should handle page-level logic while shared UI belongs inside components. Avoid putting navigation components directly inside individual pages when the dashboard layout already provides them.",
+      category: "Lecture",
+      tags: ["react", "frontend", "architecture"],
+      pinned: true,
+      favorite: true,
+      updatedAt: "2026-08-25T18:30:00",
+    },
+  ],
 };
