@@ -14,6 +14,7 @@
     "@mantine/core": "^9.5.2",
     "@mantine/form": "^9.5.2",
     "@mantine/hooks": "^9.5.2",
+    "@mantine/notifications": "^9.5.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/vite": "^4.3.3",
     "lucide-react": "^1.34.0",
@@ -23,7 +24,9 @@
     "postcss-simple-vars": "^7.0.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.2"
+    "react-router-dom": "^7.18.2",
+    "recharts": "^3.10.1",
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

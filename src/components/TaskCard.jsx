@@ -58,14 +58,13 @@ function isOverdue(task) {
   return dueDate < today;
 }
 
-export default function TaskCard({
-  task,
-  onToggleComplete,
-  onEdit,
-  onDelete,
-}) {
+export default function TaskCard({ task, onToggleComplete, onEdit, onDelete }) {
   const priority = priorityStyles[task.priority] || priorityStyles.Low;
   const overdue = isOverdue(task);
+
+  function deleteTask(task) {
+    onDelete(task);
+  }
 
   return (
     <motion.article
@@ -122,7 +121,7 @@ export default function TaskCard({
         </div>
 
         {/* Actions */}
-        <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        <div className="flex shrink-0 items-center gap-1  ">
           <button
             type="button"
             onClick={() => onEdit(task)}
@@ -134,7 +133,9 @@ export default function TaskCard({
 
           <button
             type="button"
-            onClick={() => onDelete(task.id)}
+            onClick={() => {
+              deleteTask(task);
+            }}
             aria-label={`Delete ${task.title}`}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-error-container hover:text-error"
           >
