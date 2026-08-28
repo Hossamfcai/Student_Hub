@@ -3,6 +3,7 @@ import SideBarLink from "./sideBarLink";
 import { linksData } from "../data/data";
 import { useContext } from "react";
 import { ToggleContext } from "../context/toggleContext";
+import { Link } from "react-router-dom";
 
 export default function SideBar() {
   const sideBarLinks = [...linksData];
@@ -29,7 +30,7 @@ export default function SideBar() {
         `}
       >
         <div className="w-full flex items-center justify-between px-5 py-3">
-          <div className="flex items-center gap-3">
+          <Link to="/landingPage" className="flex items-center gap-3">
             <div className="bg-primary w-10 h-10 rounded flex items-center justify-center">
               <GraduationCap className="text-on-primary" size={30} />
             </div>
@@ -41,7 +42,7 @@ export default function SideBar() {
                 Academic Workspace
               </span>
             </div>
-          </div>
+          </Link>
 
           {/* Close button for mobile */}
           <button
