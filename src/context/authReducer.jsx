@@ -143,6 +143,69 @@ export default function reducer(currentState, action) {
       updateLocalStorage(newUser);
       return newUser;
     }
+    case "addResource": {
+      const newResource = {
+        id: uuidv4(),
+        ...action.payload.formData,
+      };
+      const newUser = {
+        ...currentState,
+        resources: [...currentState.resources, newResource],
+      };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "updateResource": {
+      const newResources = currentState.resources.map((resource) =>
+        resource.id === action.payload.id
+          ? {
+              ...resource,
+              ...action.payload.formData,
+            }
+          : resource,
+      );
+      const newUser = { ...currentState, resources: [...newResources] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "deleteResource": {
+      const newResources = currentState.resources.filter((resource) => {
+        return resource.id !== action.payload.id;
+      });
+      const newUser = { ...currentState, resources: [...newResources] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "onResourceTogglePin": {
+      const newResources = currentState.resources.map((resource) => {
+        if (resource.id === action.payload.id) {
+          return {
+            ...resource,
+            pinned: !resource.pinned,
+          };
+        } else {
+          return resource;
+        }
+      });
+      const newUser = { ...currentState, resources: [...newResources] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "onResourceToggleFavorite": {
+      const newResources = currentState.resources.map((resource) => {
+        if (resource.id === action.payload.id) {
+          return {
+            ...resource,
+            favourite: !resource.favourite,
+          };
+        } else {
+          return resource;
+        }
+      });
+      const newUser = { ...currentState, resources: [...newResources] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
     default:
       return currentState;
   }

@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+
 export default function StatCard({
   icon: Icon,
   label,
