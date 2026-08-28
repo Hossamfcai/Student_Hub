@@ -11,6 +11,7 @@ import {
   Target,
   Trash2,
 } from "lucide-react";
+import { notifications } from "@mantine/notifications";
 
 import { useDisclosure } from "@mantine/hooks";
 import TaskCard from "../../components/TaskCard";
@@ -88,6 +89,12 @@ export default function Tasks() {
   const [modalOpen, setModalOpen] = useState(false); // control updated or add modal
   const [task, setTask] = useState(null); //control the returned data from taskCard component
 
+  function showNotification(message) {
+    notifications.show({
+      title: "Notification",
+      message: message,
+    });
+  }
   const statistics = useMemo(() => {
     const total = userState.initialTasks.length;
 
@@ -178,8 +185,10 @@ export default function Tasks() {
   function handleTaskSubmit(formData) {
     if (task) {
       dispatch({ type: "updateTask", payload: { task, formData } });
+      showNotification("Task has been updated successfully");
     } else {
       dispatch({ type: "addTask", payload: formData });
+      showNotification("Task has been added successfully");
     }
 
     closeModal();
@@ -187,6 +196,7 @@ export default function Tasks() {
 
   function handleToggleComplete(taskId) {
     dispatch({ type: "onToggleComplete", payload: { id: taskId } });
+    showNotification("Task has been changed it's status successfully");
   }
 
   function openDeleteModal(task) {
@@ -200,6 +210,7 @@ export default function Tasks() {
   }
   function handleDelete() {
     dispatch({ type: "deleteTask", payload: { id: task.id } });
+    showNotification("Task has been deleted successfully");
 
     close();
   }

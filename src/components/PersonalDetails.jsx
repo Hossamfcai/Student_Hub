@@ -5,6 +5,7 @@ import { Modal, TextInput, Group, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IdCard, Pencil } from "lucide-react";
 import reducer, { getInitialUserState } from "../context/authReducer";
+import { notifications } from "@mantine/notifications";
 
 export default function PersonalDetails() {
   const [opened, setOpened] = useState(false);
@@ -31,6 +32,10 @@ export default function PersonalDetails() {
   const handleSubmit = (values) => {
     setOpened(false);
     dispatch({ type: "updatePersonalInfo", payload: values });
+    notifications.show({
+      title: "Notification",
+      message: "Personal Informations updated successfully",
+    });
   };
 
   return (

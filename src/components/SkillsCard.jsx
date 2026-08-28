@@ -4,6 +4,7 @@ import { Modal, TagsInput, Group } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Brain, Pencil } from "lucide-react";
 import reducer, { getInitialUserState } from "../context/authReducer";
+import { notifications } from "@mantine/notifications";
 export default function SkillsCard() {
   const [opened, setOpened] = useState(false);
   const [userState, dispatch] = useReducer(reducer, null, getInitialUserState);
@@ -27,6 +28,10 @@ export default function SkillsCard() {
     setOpened(false);
     console.log(values.skills);
     dispatch({ type: "updateUserSkills", payload: { skills: values.skills } });
+    notifications.show({
+      title: "Notification",
+      message: "Skills updated successfully",
+    });
   };
   return (
     <>

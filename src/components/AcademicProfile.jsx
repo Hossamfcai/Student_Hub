@@ -5,6 +5,7 @@ import { Modal, TextInput, Group, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Landmark, Pencil } from "lucide-react";
 import reducer, { getInitialUserState } from "../context/authReducer";
+import { notifications } from "@mantine/notifications";
 
 export default function AcademicProfile() {
   const [opened, setOpened] = useState(false);
@@ -28,6 +29,10 @@ export default function AcademicProfile() {
   const handleSubmit = (values) => {
     setOpened(false);
     dispatch({ type: "updateAcademicInfo", payload: values });
+    notifications.show({
+      title: "Notification",
+      message: "Academic Information updated successfully",
+    });
   };
 
   return (

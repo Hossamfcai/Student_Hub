@@ -11,6 +11,7 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
+import { notifications } from "@mantine/notifications";
 import { useDisclosure } from "@mantine/hooks";
 import NoteCard from "../../components/NoteCard";
 import NoteFormModal from "../../components/NoteFormModal";
@@ -88,6 +89,13 @@ export default function Notes() {
     });
   }, [userState, searchQuery, categoryFilter, favoritesOnly, pinnedOnly]);
 
+  function showNotification(message) {
+    notifications.show({
+      title: "Notification",
+      message: message,
+    });
+  }
+
   function openCreateModal() {
     setEditingNote(null);
     setModalOpen(true);
@@ -110,8 +118,10 @@ export default function Notes() {
         type: "updateNote",
         payload: { formData, updatedAt: now, id: editingNote.id },
       });
+      showNotification("Note has been updated successfully");
     } else {
       dispatch({ type: "addNote", payload: { formData, updatedAt: now } });
+      showNotification("Note has been added successfully");
     }
 
     closeModal();
@@ -128,15 +138,18 @@ export default function Notes() {
 
   function handleDelete() {
     dispatch({ type: "deleteNote", payload: { id: editingNote.id } });
+    showNotification("Note has been deleted successfully");
     close();
   }
 
   function handleTogglePin(noteId) {
     dispatch({ type: "onTogglePin", payload: { id: noteId } });
+    showNotification("Note has been changed pin status successfully");
   }
 
   function handleToggleFavorite(noteId) {
     dispatch({ type: "onToggleFavorite", payload: { id: noteId } });
+    showNotification("Note has been changed favourite status  successfully");
   }
 
   function clearFilters() {

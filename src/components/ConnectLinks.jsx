@@ -4,6 +4,7 @@ import { Modal, TextInput, Group, ActionIcon, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Pencil, Trash2 } from "lucide-react";
 import reducer, { getInitialUserState } from "../context/authReducer";
+import { notifications } from "@mantine/notifications";
 export default function ConnectLinks() {
   const [opened, setOpened] = useState(false);
   const [userState, dispatch] = useReducer(reducer, null, getInitialUserState);
@@ -29,6 +30,10 @@ export default function ConnectLinks() {
   const handleSubmit = (values) => {
     setOpened(false);
     dispatch({ type: "updateConnect", payload: { connect: values.links } });
+    notifications.show({
+      title: "Notification",
+      message: "Connects updated successfully",
+    });
   };
   return (
     <>

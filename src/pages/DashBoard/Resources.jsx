@@ -11,6 +11,7 @@ import {
   Sparkles,
   BookOpen,
 } from "lucide-react";
+import { notifications } from "@mantine/notifications";
 import StatCard from "../../components/StateCard";
 import { useMemo, useReducer, useState } from "react";
 import reducer, { getInitialUserState } from "../../context/authReducer";
@@ -88,6 +89,12 @@ export default function Resources() {
       return new Date(second.updatedAt) - new Date(first.updatedAt);
     });
   }, [userState, searchQuery, typeFilter, favoritesOnly, pinnedOnly]);
+  function showNotification(message) {
+    notifications.show({
+      title: "Notification",
+      message: message,
+    });
+  }
 
   function clearFilters() {
     setSearchQuery("");
@@ -112,14 +119,16 @@ export default function Resources() {
     setResource(null);
   }
 
-  function handleNoteSubmit(formData) {
+  function handleResourceSubmit(formData) {
     if (resource) {
       dispatch({
         type: "updateResource",
         payload: { formData, id: resource.id },
       });
+      showNotification("Resource has been updated successfully");
     } else {
       dispatch({ type: "addResource", payload: { formData } });
+      showNotification("Resource has been added successfully");
     }
 
     closeModal();
@@ -137,14 +146,19 @@ export default function Resources() {
   function handleDelete() {
     dispatch({ type: "deleteResource", payload: { id: resource.id } });
     close();
+    showNotification("Resources has been deleted successfully");
   }
 
   function handleTogglePin(resourceId) {
     dispatch({ type: "onResourceTogglePin", payload: { id: resourceId } });
+    showNotification("Resources has been changed pin status successfully");
   }
 
   function handleToggleFavorite(resourceId) {
     dispatch({ type: "onResourceToggleFavorite", payload: { id: resourceId } });
+    showNotification(
+      "Resources has been changed favourite status successfully",
+    );
   }
 
   const hasActiveFilters =
@@ -403,7 +417,7 @@ export default function Resources() {
         <ResourceFormModal
           resource={resource}
           onClose={closeModal}
-          onSubmit={handleNoteSubmit}
+          onSubmit={handleResourceSubmit}
         />
       )}
       <DeletedModal opened={opened} close={close}>

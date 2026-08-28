@@ -8,6 +8,7 @@ import {
   Group,
   Stack,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import { Pencil, Upload } from "lucide-react";
 import defaultImage from "../assets/Images/defaultUser.jpg";
@@ -47,6 +48,10 @@ export default function ProfileHero() {
   const handleSubmit = (values) => {
     setOpened(false);
     dispatch({ type: "updateImage", payload: values.url });
+    notifications.show({
+      title: "Notification",
+      message: "Image updated successfully",
+    });
   };
 
   return (
