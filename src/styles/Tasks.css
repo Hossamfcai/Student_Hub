@@ -1,0 +1,16 @@
+.tasks-page {
+  min-height: calc(100vh - 4rem);
+}
+
+.tasks-page select {
+  cursor: pointer;
+}
+
+.tasks-page input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.65;
+}
+
+.tasks-page input[type="search"]::-webkit-search-cancel-button {
+  cursor: pointer;
+}

@@ -21,9 +21,6 @@ export default function PieChartCard({ data = [] }) {
 
   return (
     <div className="w-full h-[320px] bg-surface-container-lowest rounded-lg p-4 shadow-[0_1px_3px_rgba(0,0,0,0.1)] border border-outline-variant hover:shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] transition-shadow flex flex-col items-center">
-      <h2 className="font-headline-sm font-bold text-headline-sm text-on-background mb-6">
-        Task Status
-      </h2>
       <ResponsiveContainer width="90%" height="90%" minWidth={0}>
         <PieChart>
           <Pie

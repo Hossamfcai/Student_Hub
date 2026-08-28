@@ -1,5 +1,11 @@
 import { motion } from "motion/react";
+import { useReducer } from "react";
+import reducer, { getInitialUserState } from "../context/authReducer";
 export default function StatisticsCard({ info, id }) {
+  const [userState] = useReducer(reducer, null, getInitialUserState);
+  const totalTasks = userState.initialTasks.length;
+  const totalNotes = userState.initialNotes.length;
+  const totalResources = userState.initialNotes.length;
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -19,7 +25,9 @@ export default function StatisticsCard({ info, id }) {
             {info.title}
           </span>
           <h2 className="font-display-lg text-display-lg font-bold text-on-background">
-            50
+            {info.title == "Total Tasks" && totalTasks}
+            {info.title == "Total Notes" && totalNotes}
+            {info.title == "Total Resources" && totalResources}
           </h2>
         </div>
       </div>

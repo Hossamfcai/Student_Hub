@@ -206,6 +206,35 @@ export default function reducer(currentState, action) {
       updateLocalStorage(newUser);
       return newUser;
     }
+    case "updateUserSkills": {
+      const newSkills = [...action.payload.skills];
+      const newUser = { ...currentState, skills: [...newSkills] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "updateConnect": {
+      const newConnect = [...action.payload.connect];
+      const newUser = { ...currentState, connect: [...newConnect] };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "updatePersonalInfo": {
+      const newInfo = { ...action.payload };
+      const newUser = { ...currentState, personalInfo: { ...newInfo } };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "updateAcademicInfo": {
+      const newInfo = { ...action.payload };
+      const newUser = { ...currentState, AcademicInfo: { ...newInfo } };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
+    case "updateImage": {
+      const newUser = { ...currentState, image: { url: action.payload } };
+      updateLocalStorage(newUser);
+      return newUser;
+    }
     default:
       return currentState;
   }

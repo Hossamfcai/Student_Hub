@@ -18,8 +18,8 @@ import {
   X,
 } from "lucide-react";
 
-import "./landingpage.css";
-import heroImage from "../../assets/hero.jpg";
+import "../../styles/landingpage.css";
+import heroImage from "../../assets/Images/hero.jpg";
 
 /* =========================================================
    REUSABLE COMPONENTS
@@ -44,26 +44,37 @@ function LandingNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => setMenuOpen(false);
+  const handleSmoothScroll = (e, targetId) => {
+    e.preventDefault();
+    closeMenu(); // Close your mobile menu
 
+    const targetElement = document.querySelector(targetId);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
   return (
     <header className="landing-navbar">
       <div className="landing-container landing-nav-inner">
         <Logo />
 
         <nav className={`landing-nav-links ${menuOpen ? "is-open" : ""}`}>
-          <a href="#home" onClick={closeMenu}>
+          <a href="#home" onClick={(e) => handleSmoothScroll(e, "#home")}>
             Home
           </a>
-
-          <a href="#features" onClick={closeMenu}>
+          <a
+            href="#features"
+            onClick={(e) => handleSmoothScroll(e, "#features")}
+          >
             Features
           </a>
-
-          <a href="#about" onClick={closeMenu}>
+          <a href="#about" onClick={(e) => handleSmoothScroll(e, "#about")}>
             About
           </a>
-
-          <a href="#contact" onClick={closeMenu}>
+          <a href="#contact" onClick={(e) => handleSmoothScroll(e, "#contact")}>
             Contact
           </a>
 
@@ -173,9 +184,7 @@ function DashboardPreview() {
             <span />
           </div>
 
-          <div className="browser-address">
-            studenthub.app/dashboard
-          </div>
+          <div className="browser-address">studenthub.app/dashboard</div>
         </div>
 
         <div className="dashboard-content">
@@ -615,8 +624,8 @@ function ContactSection() {
             </h2>
 
             <p>
-              Start organizing your tasks, notes, resources, and progress in
-              one focused workspace.
+              Start organizing your tasks, notes, resources, and progress in one
+              focused workspace.
             </p>
 
             <Link to="/Dashboard/Home" className="primary-button light-button">
@@ -765,8 +774,8 @@ export default function LandingPage() {
               </h2>
 
               <p>
-                We've designed Student Hub to reduce the noise so you can
-                focus on what actually matters: learning.
+                We've designed Student Hub to reduce the noise so you can focus
+                on what actually matters: learning.
               </p>
             </motion.div>
 
