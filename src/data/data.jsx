@@ -9,6 +9,9 @@ import {
   CircleCheckBig,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import videoImage from "../assets/videoImage.jpg";
+import pdfImage from "../assets/pdfImage.jpg";
+import websiteImage from "../assets/websiteImage.jpg";
 
 export const linksData = [
   { title: "Home", path: "/Dashboard/Home", icon: <House /> },
@@ -189,16 +192,56 @@ export const user = {
   resources: [
     {
       id: uuidv4(),
-      title: "React Component Architecture",
-      type: "video",
-      imageUrl: "",
+      link: "https://www.w3schools.com/",
+      title: "Advanced Calculus: Semester 2 Fundamentals",
+      type: "Video",
+      imageUrl: videoImage,
       content:
-        "Keep components small and reusable. Pages should handle page-level logic while shared UI belongs inside components. Avoid putting navigation components directly inside individual pages when the dashboard layout already provides them.",
-      category: "Lecture",
+        "Comprehensive study guide covering multi-variable calculus and differential equations.",
+
       tags: ["react", "frontend", "architecture"],
       pinned: true,
-      favorite: true,
-      updatedAt: "2026-08-25T18:30:00",
+      favourite: false,
+    },
+    {
+      id: uuidv4(),
+      link: "https://developer.mozilla.org/en-US/",
+      title: "JSTOR Research Database Access Portal",
+      type: "Pdf",
+      imageUrl: pdfImage,
+      content:
+        "Direct portal link to academic journals, primary sources, and books for history thesis.",
+
+      tags: ["architecture"],
+      pinned: false,
+      favourite: false,
+    },
+    {
+      id: uuidv4(),
+      link: "https://jsonplaceholder.typicode.com/",
+      title: "Introduction to Machine Learning Lecture Series",
+      type: "Website",
+      imageUrl: websiteImage,
+      content:
+        "Stanford CS229 recorded lectures covering supervised learning, SVMs, and neural networks.",
+
+      tags: ["frontend", "architecture"],
+      pinned: false,
+      favourite: true,
+    },
+
+    {
+      id: uuidv4(),
+      link: "https://jsonplaceholder.typicode.com/",
+      title: "Introduction to Machine Learning Lecture Series",
+      type: "Website",
+      imageUrl: websiteImage,
+      content:
+        "Stanford CS229 recorded lectures covering supervised learning, SVMs, and neural networks.",
+
+      tags: ["frontend", "architecture"],
+      pinned: false,
+      favourite: true,
     },
   ],
 };
